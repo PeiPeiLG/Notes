@@ -1,0 +1,14 @@
+@import "_variable.scss";
+@import "_reset.scss";
+@import "_helper.scss";
+@import "_mixin.scss";
+@import "_media.scss";
+@import "_main.scss";
+
+
+.class{
+    font-size: 12px;
+    @include pad{
+        font-size: 30px;
+    }
+}

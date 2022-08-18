@@ -1,0 +1,118 @@
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+$spacer: 1rem !default;
+$spacers: () !default;
+$spacers: map-merge(
+  (
+    0: 0,
+    1: $spacer * .25,
+    2: $spacer * .5,
+    3: $spacer,
+    4: $spacer * 1.5,
+    5: $spacer * 3,
+  ),
+  $spacers
+);
+
+$utilities: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$utilities: map-merge(
+  
+    (
+    "position": (
+      class: p,
+      responsive: true,
+      property: position,
+      values: static relative absolute fixed sticky
+    ),
+    "margin": (
+      responsive: true,
+      property: margin,
+      class: m,
+      values: map-merge($spacers, (auto: auto))
+    )
+    ,
+      "padding": (
+      responsive: true,
+      property: padding,
+      class: p,
+      values: map-merge($spacers, (auto: auto))
+    )
+    ,
+    "align": (
+      property: vertical-align,
+      class: align,
+      values: baseline top middle bottom text-bottom text-top
+    ),
+    "float": (
+      responsive: true,
+      property: float,
+      values: left right none
+    ),
+
+    "display": (
+      responsive: true,
+      print: true,
+      property: display,
+      class: d,
+      values: none inline inline-block block table table-row table-cell flex inline-flex
+    )
+)
+,
+  $utilities
+);
+@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
+  $min: breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
+  $min: map-get($breakpoints, $name);
+  @return if($min != 0, $min, null);
+}
+@mixin generate-utility($utility, $infix) {
+  $values: map-get($utility, values);
+  @if type-of($values) == "string" or type-of(nth($values, 1)) != "list" {
+    $values: zip($values, $values);
+  }
+  @each $value in $values {
+    $properties: map-get($utility, property);
+    @if type-of($properties) == "string" {
+      $properties: append((), $properties);
+    }
+    $property-class: map-get($utility, class);
+    $property-class: if($property-class, $property-class, nth($properties, 1));
+    $property-class-modifier: if(nth($value, 1), "-" + nth($value, 1), "");
+
+    .#{$property-class + $infix + $property-class-modifier} {
+      @each $property in $properties {
+        #{$property}: #{nth($value, 2)} !important;
+      }
+    }
+  }
+}
+@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
+  @return if(breakpoint-min($name, $breakpoints) == null, "", "-#{$name}");
+}
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    @each $key, $utility in $utilities {
+      @if type-of($utility) == "map" and (map-get($utility, responsive) or $infix == "") {
+        @include generate-utility($utility, $infix);
+      }
+    }
+  }
+}
+

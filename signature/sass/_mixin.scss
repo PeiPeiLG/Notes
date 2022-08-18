@@ -1,0 +1,42 @@
+// 區塊置中
+@mixin div-auto($w){
+    width: $w;
+    margin: $margin-auto;
+}
+// 文字造型
+@mixin font($fz,$fw) {
+    font-size: $fz;
+    font-weight: $fw;
+}
+
+// 背景
+@mixin bg($name,$h){
+    $url:'../images/' + $name;
+    background-image: url($url);
+    height: $h;
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+//絕對定位
+@mixin a_tl($top,$left) {
+    position: absolute;
+    top:$top;
+    left: $left;
+}
+@mixin a_tr($top,$right) {
+    position: absolute;
+    top:$top;
+    right: $right;
+}
+@mixin a_bl($bottom,$left) {
+    position: absolute;
+    bottom:$bottom;
+    left: $left;
+}
+@mixin a_br($bottom,$right) {
+    position: absolute;
+    bottom:$bottom;
+    right: $right;
+}
