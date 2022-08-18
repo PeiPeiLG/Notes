@@ -6,5 +6,7 @@
 
 
 ## npm 下載路徑&文件
-套件連結
-https://github.com/szimek/signature_pad
+[套件連結](https://github.com/szimek/signature_pad)
+
+## 網址
+https://labibi-lg.github.io/Notes/signature/
